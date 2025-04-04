@@ -1,33 +1,39 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
-import { BiPlusCircle} from 'react-icons/bi';
-import { HiOutlineReceiptRefund } from 'react-icons/hi';
-import { MdList } from 'react-icons/md';
+import React from "react";
+import { NavLink } from "react-router-dom";
+import { BiPlusCircle } from "react-icons/bi";
+import { HiOutlineReceiptRefund } from "react-icons/hi";
+import { MdList } from "react-icons/md";
+
 const Sidebar = () => {
   return (
-    <div className='w-[18%]  min-h-screen border-r-2'>
-        <div className='flex flex-col gap4 pt-6 pl-[20%] text-[15px]'> 
-            <NavLink className='flex items-center gap-3 border border-gray-300 border-r-0 px-3 py-2 rounded-l' 
-            to='/add'
-            >
-            <BiPlusCircle size={30} />
-            <p className='hidden md:block'>Add Items</p>
-            </NavLink>
-            <NavLink className='flex items-center gap-3 border border-gray-300 border-r-0 px-3 py-2 rounded-l' 
-            to='/list'
-            >
-            <MdList size={30} />
-            <p className='hidden md:block'>List Items</p>
-            </NavLink>
-            <NavLink className='flex items-center gap-3 border border-gray-300 border-r-0 px-3 py-2 rounded-l'
-             to='/orders'
-             >
-            <HiOutlineReceiptRefund size={30} />
-            <p className='hidden md:block'>Orders</p>
-            </NavLink>
-        </div>
-    </div>
-  )
-}
+    <aside className="w-[20%] min-h-screen bg-gray-900 text-white border-r border-gray-800 shadow-lg">
+      <div className="flex flex-col gap-4 pt-8 px-5">
+        <NavLink
+          className="flex items-center gap-3 px-4 py-3 rounded-md transition-all hover:bg-pink-600 hover:text-white"
+          to="/add"
+        >
+          <BiPlusCircle size={25} />
+          <p className="hidden md:block">Add Items</p>
+        </NavLink>
 
-export default Sidebar
+        <NavLink
+          className="flex items-center gap-3 px-4 py-3 rounded-md transition-all hover:bg-pink-600 hover:text-white"
+          to="/list"
+        >
+          <MdList size={25} />
+          <p className="hidden md:block">List Items</p>
+        </NavLink>
+
+        <NavLink
+          className="flex items-center gap-3 px-4 py-3 rounded-md transition-all hover:bg-pink-600 hover:text-white"
+          to="/orders"
+        >
+          <HiOutlineReceiptRefund size={25} />
+          <p className="hidden md:block">Orders</p>
+        </NavLink>
+      </div>
+    </aside>
+  );
+};
+
+export default Sidebar;

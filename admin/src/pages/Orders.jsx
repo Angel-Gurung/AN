@@ -1,18 +1,13 @@
-
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { backendUrl, currency } from "../App";
-import { useState } from "react";
-import { useEffect } from "react";
 import { toast } from "react-toastify";
-import { assets } from "../assets/assets";
 
 const Orders = ({ token }) => {
   const [orders, setOrders] = useState([]);
+
   const fetchAllOrders = async () => {
-    if (!token) {
-      return null;
-    }
+    if (!token) return;
     try {
       const response = await axios.post(
         backendUrl + "/api/order/list",
@@ -22,11 +17,11 @@ const Orders = ({ token }) => {
       if (response.data.success) {
         setOrders(response.data.orders.reverse());
       } else {
-        console.eroor(response.data.message);
+        console.error(response.data.message);
         toast.error(response.data.message);
       }
     } catch (error) {
-      console.eroor(error);
+      console.error(error);
       toast.error(error.message);
     }
   };
@@ -56,75 +51,57 @@ const Orders = ({ token }) => {
   }, [token]);
 
   return (
-    <div>
-      <h3>Order Page</h3>
-      <div>
+    <div className="p-4">
+      <h3 className="text-xl font-semibold mb-4 text-gray-800">Order History</h3>
+      <div className="grid gap-4">
         {orders.map((order, index) => (
           <div
-            className="grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border border-gray-200 p-5 md:p-8 md:my-4 text-xs sm:text-sm text-gray-700"
             key={index}
+            className="bg-white shadow-md rounded-lg p-5 border border-gray-200"
           >
-            <img  src="https://png.pngtree.com/png-clipart/20190614/original/pngtree-vector-package-icon-png-image_3782962.jpg" alt="" className="w-12 " />
-            <div>
-              <div>
-                {order.items.map((item, index) => {
-                  if (index === order.items.length - 1) {
-                    return (
-                      <p className="py-0.5" key={index}>
-                        {item.name} X {item.quantity} <span>{item.size}</span>
-                      </p>
-                    );
-                  } else {
-                    return (
-                      <p className="py-0.5" key={index}>
-                        {item.name} X {item.quantity} <span>{item.size},</span>
-                      </p>
-                    );
-                  }
-                })}
+            <div className="flex items-center gap-4">
+              <img
+                src="https://png.pngtree.com/png-clipart/20190614/original/pngtree-vector-package-icon-png-image_3782962.jpg"
+                alt="Order Icon"
+                className="w-16 h-16"
+              />
+              <div className="flex flex-col flex-1">
+                <p className="font-medium text-gray-900">
+                  {order.address.firstName} {order.address.lastName}
+                </p>
+                <p className="text-gray-600">{order.address.street}, {order.address.city}</p>
+                <p className="text-gray-600">{order.address.state}, {order.address.country}, {order.address.zipCode}</p>
+                <p className="text-gray-800 font-medium mt-1">📞 {order.address.phone}</p>
               </div>
-              <p className="mt-3 mb-2 font-medium">
-                {order.address.firstName + " " + order.address.lastName}
-              </p>
-              <div>
-                <p>{order.address.street + ","}</p>
-                <p>
-                  {order.address.city +
-                    ", " +
-                    order.address.state +
-                    ", " +
-                    order.address.country +
-                    ", " +
-                    order.address.zipCode}
+              <div className="text-center">
+                <p className="font-semibold text-lg text-gray-800">{currency}{order.amount}</p>
+                <p className={`mt-1 ${order.payment ? 'text-green-600' : 'text-red-500'}`}>
+                  {order.payment ? "✅ Paid" : "❌ Pending"}
                 </p>
               </div>
-              <p className="text-sm sm:text-[15px]">{order.address.phone}</p>
             </div>
-            <div>
-              <p className="text-sm sm:text-[15px]">
-                Items : {order.items.length}
-              </p>
-              <p className="mt-3">Method : {order.paymentMethod}</p>
-              <p>Payment : {order.payment ? "Done" : "Pending"}</p>
-              <p>Date : {new Date(order.date).toLocaleDateString()}</p>
+
+            <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm text-gray-700">
+              <p>📦 Items: <strong>{order.items.length}</strong></p>
+              <p>💳 Method: <strong>{order.paymentMethod}</strong></p>
+              <p>📅 Date: <strong>{new Date(order.date).toLocaleDateString()}</strong></p>
             </div>
-            <p>
-              {currency}
-              {order.amount}
-            </p>
-            <select
-              className="p-2 font-semibold"
-              value={order.status}
-              onChange={(e) => statusHandler(e, order._id)}
-            >
-            
-              <option value="Order Placed">Order Placed</option>
-              <option value="Packing">Packing</option>
-              <option value="Order Shipped">Order Shipped</option>
-              <option value="Out for delivery">Out for delivery</option>
-              <option value="Delivered">Delivered</option>
-              <option value="Cancelled">Cancelled</option>
-            </select>
+
+            <div className="mt-4">
+              <label className="block text-gray-800 font-semibold mb-1">Order Status</label>
+              <select
+                className="w-full p-2 border rounded-lg text-gray-700 focus:outline-none focus:ring focus:ring-gray-300"
+                value={order.status}
+                onChange={(e) => statusHandler(e, order._id)}
+              >
+                <option value="Order Placed">📥 Order Placed</option>
+                <option value="Packing">📦 Packing</option>
+                <option value="Order Shipped">🚚 Order Shipped</option>
+                <option value="Out for delivery">📍 Out for Delivery</option>
+                <option value="Delivered">✅ Delivered</option>
+                <option value="Cancelled">❌ Cancelled</option>
+              </select>
+            </div>
           </div>
         ))}
       </div>
